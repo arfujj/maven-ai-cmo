@@ -1,0 +1,36 @@
+{
+  "name": "maven-cmo",
+  "owner": {
+    "name": "Maven",
+    "url": "https://github.com/maven-cmo/maven"
+  },
+  "description": "Maven, your AI CMO: 35 marketing skills for local businesses and agencies, run like a chief marketing officer.",
+  "plugins": [
+    {
+      "name": "maven",
+      "source": "./",
+      "description": "Maven, your AI CMO. 35 marketing skills run like a chief marketing officer: it reads the business, sets a 90-day plan around one number, and ships the work, from Google profile, reviews, local pages and call tracking to ads, SEO, AI search, email and content. Built for local businesses and the agencies that serve them. Drafts only: nothing is published, sent or spent without you. Works without paid tools.",
+      "version": "1.0.0",
+      "keywords": [
+        "ai-cmo",
+        "marketing",
+        "local-business",
+        "agency",
+        "local-seo",
+        "google-business-profile",
+        "reviews",
+        "paid-ads",
+        "google-ads",
+        "meta-ads",
+        "seo",
+        "ai-search",
+        "copywriting",
+        "email",
+        "content",
+        "positioning",
+        "marketing-plan",
+        "client-reporting"
+      ]
+    }
+  ]
+}

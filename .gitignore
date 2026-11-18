@@ -1,0 +1,24 @@
+# Secrets: never commit
+.env
+.env.*
+!.env.example
+
+# Dependencies and builds
+node_modules/
+.next/
+out/
+.vercel/
+*.tsbuildinfo
+next-env.d.ts
+
+# Local data (test analyses, prospect lists)
+.data/
+
+# Upstream clone (credited in maven/CREDITS.md)
+_source/
+
+# OS and iCloud duplicates
+.DS_Store
+* 2
+* 2.*
+__pycache__/

@@ -1,0 +1,508 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Maven AI CMO</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Maven is an AI CMO for local service businesses and the agencies that market them. It reads the business, sets a 90-day plan around one number, and ships the work. 35 skills, drafts only, works without paid tools.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@112..125,600..900&family=Public+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* Layout: a work-order desk. Paper ground, ink type, canary highlighter marks the things that matter.
+   Hero pairs the promise with a real-looking Monday brief; the customer path is the signature band. */
+:root {
+  --paper: #f3f5f2;
+  --sheet: #ffffff;
+  --ink: #141c33;
+  --ink-2: #47506a;
+  --rule: #d5dad6;
+  --canary: #f4d23e;
+  --canary-ink: #141c33;
+  --dispatch: #2443c9;
+  --dispatch-ink: #ffffff;
+  --carbon: #e9ecf6;
+  --ok: #1f7a4d;
+  --warn: #a4570b;
+  --shadow: 0 1px 0 rgba(20, 28, 51, .06), 0 12px 32px -18px rgba(20, 28, 51, .35);
+
+  --display: "Archivo", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+  --body: "Public Sans", "Helvetica Neue", Arial, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  --step--1: .84rem;
+  --step-0: 1rem;
+  --step-1: 1.2rem;
+  --step-2: 1.55rem;
+  --step-3: 2.1rem;
+  --step-4: clamp(2.4rem, 5.6vw, 4.1rem);
+  --wrap: 1160px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0e1322; --sheet: #161d31; --ink: #eef0ea; --ink-2: #a9b0c3; --rule: #2a3350;
+    --canary: #f4d23e; --canary-ink: #141c33; --dispatch: #7f97ff; --dispatch-ink: #0e1322;
+    --carbon: #1d2640; --ok: #5fcf95; --warn: #f0a85a;
+    --shadow: 0 1px 0 rgba(0, 0, 0, .3), 0 18px 40px -20px rgba(0, 0, 0, .7);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0e1322; --sheet: #161d31; --ink: #eef0ea; --ink-2: #a9b0c3; --rule: #2a3350;
+  --canary: #f4d23e; --canary-ink: #141c33; --dispatch: #7f97ff; --dispatch-ink: #0e1322;
+  --carbon: #1d2640; --ok: #5fcf95; --warn: #f0a85a;
+  --shadow: 0 1px 0 rgba(0, 0, 0, .3), 0 18px 40px -20px rgba(0, 0, 0, .7);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation: none !important; transition: none !important; } }
+body {
+  margin: 0; background: var(--paper); color: var(--ink);
+  font: 400 var(--step-0)/1.6 var(--body);
+  -webkit-font-smoothing: antialiased;
+}
+.wrap {
+  max-width: var(--wrap); margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+a { color: var(--dispatch); text-underline-offset: 3px; }
+:focus-visible { outline: 3px solid var(--dispatch); outline-offset: 3px; border-radius: 4px; }
+h1, h2, h3 { font-family: var(--display); font-stretch: 118%; line-height: 1.05; margin: 0; text-wrap: balance; letter-spacing: -.01em; }
+h2 { font-size: var(--step-3); font-weight: 800; }
+h3 { font-size: var(--step-1); font-weight: 700; font-stretch: 112%; letter-spacing: 0; }
+p { margin: 0; }
+.eyebrow { font: 600 var(--step--1)/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); }
+.lede { font-size: var(--step-1); color: var(--ink-2); max-width: 60ch; }
+mark { background: linear-gradient(transparent 12%, var(--canary) 12%, var(--canary) 88%, transparent 88%); color: var(--canary-ink); padding: 0 .12em; }
+code, kbd { font-family: var(--mono); font-size: .92em; }
+
+/* Header */
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--paper); }
+.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 9; background: color-mix(in srgb, var(--paper) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--rule); }
+.top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 12px; }
+.mark { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); }
+.mark svg { flex: none; }
+.mark b { font: 900 1.3rem/1 var(--display); font-stretch: 125%; letter-spacing: -.02em; }
+.mark span { font: 500 .72rem/1 var(--mono); color: var(--ink-2); letter-spacing: .06em; text-transform: uppercase; }
+.nav { display: flex; align-items: center; gap: 22px; }
+.nav a { color: var(--ink); text-decoration: none; font-weight: 500; font-size: .95rem; }
+.nav a:hover { text-decoration: underline; }
+.btn { display: inline-flex; align-items: center; gap: 8px; font: 600 .95rem/1 var(--body); padding: 12px 18px; border-radius: 8px; border: 1.5px solid var(--ink); background: var(--ink); color: var(--paper); text-decoration: none; cursor: pointer; }
+.btn:hover { background: var(--dispatch); border-color: var(--dispatch); color: var(--dispatch-ink); }
+.btn.ghost { background: transparent; color: var(--ink); }
+.btn.ghost:hover { background: var(--sheet); color: var(--ink); border-color: var(--ink); }
+@media (max-width: 760px) { .nav a:not(.btn) { display: none; } }
+
+/* Hero */
+.hero .wrap { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: 56px; align-items: start; padding-block: 64px 72px; }
+.hero h1 { font-size: var(--step-4); font-weight: 900; font-stretch: 125%; margin-top: 18px; }
+.hero .lede { margin-top: 22px; }
+.who { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
+.who span { font: 500 .8rem/1 var(--mono); padding: 7px 10px; border: 1px solid var(--rule); border-radius: 999px; background: var(--sheet); color: var(--ink-2); }
+.install { margin-top: 30px; display: grid; gap: 10px; max-width: 560px; }
+.cmd { display: flex; align-items: stretch; border: 1.5px solid var(--ink); border-radius: 10px; background: var(--sheet); overflow: hidden; }
+.cmd code { flex: 1; min-width: 0; padding: 14px 16px; overflow-x: auto; white-space: nowrap; font-size: .9rem; }
+.cmd code::before { content: "> "; color: var(--ink-2); }
+.cmd button { flex: none; border: 0; border-left: 1.5px solid var(--ink); background: var(--canary); color: var(--canary-ink); font: 600 .85rem/1 var(--mono); padding: 0 16px; cursor: pointer; }
+.cmd button:hover { filter: brightness(.95); }
+.install .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.install small { color: var(--ink-2); font-size: .88rem; }
+
+/* The brief (work-order sheet) */
+.sheet { background: var(--sheet); border: 1px solid var(--rule); border-radius: 6px; box-shadow: var(--shadow); position: relative; overflow: hidden; }
+.sheet::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 6px; background: repeating-linear-gradient(90deg, var(--canary) 0 18px, transparent 18px 26px); }
+.sheet-head { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; padding: 22px 22px 14px; border-bottom: 1px dashed var(--rule); flex-wrap: wrap; }
+.sheet-head h3 { font-size: 1.05rem; font-stretch: 118%; letter-spacing: .02em; text-transform: uppercase; }
+.sheet-meta { font: 500 .78rem/1.4 var(--mono); color: var(--ink-2); }
+.sample { font: 600 .7rem/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--warn); border: 1px solid currentColor; border-radius: 3px; padding: 4px 6px; }
+.score { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-bottom: 1px solid var(--rule); }
+.score div { padding: 14px 22px; display: grid; gap: 4px; }
+.score div + div { border-left: 1px solid var(--rule); }
+.score dt { font: 500 .72rem/1.2 var(--mono); color: var(--ink-2); text-transform: uppercase; letter-spacing: .05em; }
+.score dd { margin: 0; font: 800 1.7rem/1 var(--display); font-stretch: 112%; font-variant-numeric: tabular-nums; }
+.score dd small { font: 500 .78rem/1 var(--mono); color: var(--ok); margin-left: 4px; }
+.sheet-body { padding: 16px 22px 20px; display: grid; gap: 16px; }
+.sheet-body h4 { margin: 0 0 8px; font: 600 .74rem/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); }
+.moves { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; counter-reset: m; }
+.moves li { display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 10px; counter-increment: m; font-size: .94rem; line-height: 1.45; }
+.moves li::before { content: counter(m); font: 700 .8rem/26px var(--mono); text-align: center; width: 26px; height: 26px; border-radius: 50%; background: var(--carbon); }
+.tag { display: inline-block; font: 500 .74rem/1 var(--mono); padding: 4px 6px; border-radius: 4px; background: var(--carbon); color: var(--ink); margin-top: 5px; }
+.split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
+.note { font-size: .9rem; line-height: 1.45; padding: 10px 12px; border-radius: 4px; background: var(--carbon); }
+.note b { display: block; font: 600 .72rem/1.3 var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--ink-2); margin-bottom: 4px; }
+.sheet-foot { padding: 12px 22px; border-top: 1px dashed var(--rule); font: 500 .74rem/1.4 var(--mono); color: var(--ink-2); }
+
+/* Sections */
+section { padding-block: 84px; }
+.sec-head { display: grid; gap: 14px; max-width: 720px; margin-bottom: 44px; }
+.band { background: var(--sheet); border-block: 1px solid var(--rule); }
+
+/* Customer path */
+.path { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 0; border: 1.5px solid var(--ink); border-radius: 10px; overflow: hidden; background: var(--paper); }
+.stage { padding: 20px 18px 22px; display: grid; gap: 10px; align-content: start; position: relative; }
+.stage + .stage { border-left: 1.5px solid var(--ink); }
+.stage .num { font: 600 .74rem/1 var(--mono); color: var(--ink-2); letter-spacing: .06em; }
+.stage h3 { font-size: 1.3rem; font-stretch: 125%; font-weight: 900; }
+.stage p { font-size: .9rem; line-height: 1.45; color: var(--ink-2); }
+.stage ul { list-style: none; padding: 0; margin: 4px 0 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.stage li { font: 500 .74rem/1 var(--mono); padding: 5px 7px; border-radius: 4px; background: var(--sheet); border: 1px solid var(--rule); }
+.stage.first { background: var(--canary); color: var(--canary-ink); }
+.stage.first p, .stage.first .num { color: var(--canary-ink); }
+.stage.first li { background: rgba(255, 255, 255, .55); border-color: rgba(20, 28, 51, .25); color: var(--canary-ink); }
+.path-note { display: flex; gap: 12px; align-items: baseline; margin-top: 18px; color: var(--ink-2); font-size: .95rem; flex-wrap: wrap; }
+.path-note b { color: var(--ink); }
+@media (max-width: 980px) {
+  .path { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .stage + .stage { border-left: 0; }
+  .stage { border-top: 1.5px solid var(--ink); }
+  .stage:nth-child(-n+2) { border-top: 0; }
+  .stage:nth-child(even) { border-left: 1.5px solid var(--ink); }
+}
+@media (max-width: 520px) {
+  .path { grid-template-columns: minmax(0, 1fr); }
+  .stage:nth-child(even) { border-left: 0; }
+  .stage:nth-child(2) { border-top: 1.5px solid var(--ink); }
+}
+
+/* Rhythm */
+.rhythm { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; }
+.beat { border-top: 3px solid var(--ink); padding-top: 16px; display: grid; gap: 10px; align-content: start; }
+.beat .when { font: 600 .78rem/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; }
+.beat code { font-size: .86rem; color: var(--dispatch); }
+.beat p { color: var(--ink-2); font-size: .95rem; }
+@media (max-width: 900px) { .rhythm { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px 18px; } }
+@media (max-width: 520px) { .rhythm { grid-template-columns: minmax(0, 1fr); } }
+
+/* Skills */
+.filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+.filters button { font: 500 .85rem/1 var(--body); padding: 9px 13px; border-radius: 999px; border: 1.5px solid var(--rule); background: var(--sheet); color: var(--ink); cursor: pointer; }
+.filters button[aria-pressed="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.filters button span { font-family: var(--mono); opacity: .7; margin-left: 4px; }
+.skills { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 40px; }
+.skill { display: grid; grid-template-columns: minmax(0, 210px) minmax(0, 1fr); gap: 16px; padding: 14px 0; border-bottom: 1px solid var(--rule); align-items: baseline; }
+.skill code { font-size: .86rem; font-weight: 600; color: var(--ink); overflow-wrap: anywhere; }
+.skill code::before { content: "/"; color: var(--ink-2); }
+.skill p { font-size: .93rem; color: var(--ink-2); line-height: 1.45; }
+.skill .grp { display: none; }
+@media (max-width: 860px) { .skills { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 480px) { .skill { grid-template-columns: minmax(0, 1fr); gap: 4px; } }
+
+/* Agency */
+.agency { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 48px; align-items: start; }
+.feats { list-style: none; margin: 26px 0 0; padding: 0; display: grid; gap: 16px; }
+.feats li { display: grid; gap: 4px; padding-left: 18px; border-left: 3px solid var(--canary); }
+.feats b { font-weight: 600; }
+.feats span { color: var(--ink-2); font-size: .95rem; }
+.table-scroll { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: .9rem; min-width: 520px; }
+th, td { text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--rule); }
+th { font: 600 .72rem/1.2 var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--ink-2); }
+td { font-variant-numeric: tabular-nums; }
+.pill { display: inline-block; font: 600 .72rem/1 var(--mono); padding: 5px 7px; border-radius: 4px; }
+.pill.ok { color: var(--ok); background: color-mix(in srgb, var(--ok) 14%, transparent); }
+.pill.warn { color: var(--warn); background: color-mix(in srgb, var(--warn) 16%, transparent); }
+.callout { margin: 14px 0 0; font-size: .92rem; color: var(--ink-2); }
+.callout b { color: var(--ink); }
+@media (max-width: 900px) { .agency { grid-template-columns: minmax(0, 1fr); } .hero .wrap { grid-template-columns: minmax(0, 1fr); gap: 44px; padding-block: 44px 56px; } }
+
+/* Rules */
+.rules { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; }
+.rule { background: var(--sheet); border: 1px solid var(--rule); border-radius: 8px; padding: 20px; display: grid; gap: 8px; align-content: start; }
+.rule p { color: var(--ink-2); font-size: .94rem; }
+@media (max-width: 900px) { .rules { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 520px) { .rules { grid-template-columns: minmax(0, 1fr); } .split, .score { grid-template-columns: minmax(0, 1fr); } .score div + div { border-left: 0; border-top: 1px solid var(--rule); } }
+
+/* Install */
+.steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; counter-reset: s; }
+.step { display: grid; gap: 12px; align-content: start; counter-increment: s; }
+.step h3::before { content: counter(s) ". "; color: var(--ink-2); }
+.step p { color: var(--ink-2); font-size: .95rem; }
+.step .cmd code { font-size: .84rem; }
+@media (max-width: 900px) { .steps { grid-template-columns: minmax(0, 1fr); } }
+.alt { margin-top: 26px; color: var(--ink-2); font-size: .95rem; }
+
+footer { border-top: 1px solid var(--rule); padding-block: 36px 48px; }
+footer .wrap { display: flex; flex-wrap: wrap; gap: 16px 32px; justify-content: space-between; align-items: center; color: var(--ink-2); font-size: .9rem; }
+footer nav { display: flex; flex-wrap: wrap; gap: 20px; }
+.toast { position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--ink); color: var(--paper); font: 500 .88rem/1 var(--mono); padding: 12px 16px; border-radius: 8px; opacity: 0; pointer-events: none; transition: opacity .2s; }
+.toast.on { opacity: 1; }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="mark" href="#top" aria-label="Maven home">
+      <svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><rect x="1" y="1" width="28" height="28" rx="6" fill="var(--ink)"/><path d="M7 21V9l8 7 8-7v12" fill="none" stroke="var(--canary)" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/></svg>
+      <b>Maven</b><span>AI CMO</span>
+    </a>
+    <nav class="nav" aria-label="Main">
+      <a href="#how">How it works</a>
+      <a href="#skills">Skills</a>
+      <a href="#agencies">For agencies</a>
+      <a class="btn" href="#install">Install</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero" style="padding-block:0">
+    <div class="wrap">
+      <div>
+        <p class="eyebrow">An AI CMO for Claude Code</p>
+        <h1>The marketing head your shop never had time to hire.</h1>
+        <p class="lede">Maven reads your business, picks <mark>the one number that matters</mark>, finds where customers slip away, and ships the fix. Then it keeps the rhythm every Monday. Built for local service businesses and the agencies that market them.</p>
+        <div class="who" aria-label="Built for">
+          <span>plumbers</span><span>roofers</span><span>HVAC</span><span>dentists</span><span>med spas</span><span>law firms</span><span>agencies</span>
+        </div>
+        <div class="install">
+          <div class="cmd"><code id="cmd-hero">/plugin install maven --marketplace maven-cmo/maven</code><button type="button" data-copy="cmd-hero">Copy</button></div>
+          <div class="row">
+            <a class="btn ghost" href="#skills">See all 35 skills</a>
+            <small>Then type <code>/maven:cmo</code> and name the business.</small>
+          </div>
+        </div>
+      </div>
+
+      <article class="sheet" aria-label="Sample weekly brief">
+        <div class="sheet-head">
+          <div>
+            <h3>Weekly brief</h3>
+            <p class="sheet-meta">Hartline Plumbing, Dallas · Mon 16 Nov · week 6 of 13</p>
+          </div>
+          <span class="sample">Sample · illustrative</span>
+        </div>
+        <dl class="score">
+          <div><dt>Booked jobs</dt><dd>31<small>+4</small></dd></div>
+          <div><dt>Plan pace</dt><dd>30</dd></div>
+          <div><dt>Missed calls</dt><dd>7%</dd></div>
+        </dl>
+        <div class="sheet-body">
+          <div>
+            <h4>This week's three moves</h4>
+            <ol class="moves">
+              <li><div>Approve 4 owner replies to new reviews (2 are 3-star)<br><span class="tag">/reviews · 5 min, you</span></div></li>
+              <li><div>Put the phone number and "same-day" on the first screen of the water heater page<br><span class="tag">/first-screen-check · Maven drafts</span></div></li>
+              <li><div>Write the Richardson page the local plan approved<br><span class="tag">/service-area-pages · ~25 min</span></div></li>
+            </ol>
+          </div>
+          <div class="split">
+            <p class="note"><b>Stop</b>The neighborhood-app boost. No booked job traced to it in 5 weeks.</p>
+            <p class="note"><b>Your call</b>Turn on the missed-call text-back after hours? Yes or no by Wed.</p>
+          </div>
+        </div>
+        <p class="sheet-foot">Every number comes from your call log or booking system, with the source in the notes.</p>
+      </article>
+    </div>
+  </section>
+
+  <section id="how" class="band">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="eyebrow">How Maven thinks</p>
+        <h2>Fix the leak before you buy more traffic.</h2>
+        <p class="lede">A customer moves through six stages before they become a booked job. Maven finds the one that's leaking most and fixes the leak closest to the money first. More ads into a site that hides the phone number is money spent twice.</p>
+      </div>
+      <div class="path">
+        <div class="stage"><span class="num">01</span><h3>Found</h3><p>Do they show up when someone searches the trade and the town?</p><ul><li>google-business-profile</li><li>local-seo-plan</li><li>ai-search</li></ul></div>
+        <div class="stage"><span class="num">02</span><h3>Chosen</h3><p>Next to the top 3, do they win the click?</p><ul><li>reviews</li><li>positioning-angles</li></ul></div>
+        <div class="stage"><span class="num">03</span><h3>Call</h3><p>Does the visit turn into a call or a form?</p><ul><li>first-screen-check</li><li>landing-page</li></ul></div>
+        <div class="stage first"><span class="num">04 · usually first</span><h3>Answered</h3><p>Does a person pick up, or reply fast?</p><ul><li>speed-to-lead</li><li>google-ads-tracking</li></ul></div>
+        <div class="stage"><span class="num">05</span><h3>Closed</h3><p>Does the quote become a job?</p><ul><li>email-sequences</li><li>direct-response-copy</li></ul></div>
+        <div class="stage"><span class="num">06</span><h3>Back</h3><p>Do they return, review and refer?</p><ul><li>reviews</li><li>newsletter</li></ul></div>
+      </div>
+      <p class="path-note"><b>One number, always.</b> Booked jobs or calls that became appointments, counted from your own phone log. Never impressions.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="eyebrow">The rhythm</p>
+        <h2>A CMO is a cadence, not a single deliverable.</h2>
+        <p class="lede">Say "schedule it" after any run and Maven sets up the matching routine. Routines write dated drafts and reports. None of them publish, send or spend.</p>
+      </div>
+      <div class="rhythm">
+        <div class="beat"><span class="when">Each quarter</span><h3>The 90-day plan</h3><code>/maven:marketing-plan</code><p>One number, where it leaks, three to five ranked bets, the budget split, the season ahead, and the keep-or-kill rule for each bet.</p></div>
+        <div class="beat"><span class="when">Every Monday</span><h3>The weekly brief</h3><code>/maven:weekly-brief</code><p>A two-minute memo: the scoreboard against the plan, what shipped, what's waiting on you, and three moves for the week.</p></div>
+        <div class="beat"><span class="when">Every month</span><h3>The local checkup</h3><code>monthly-local-checkup</code><p>Your Google profile, review pace, first screen and missed calls, checked against the top 3 in your map pack.</p></div>
+        <div class="beat"><span class="when">Every month</span><h3>The review</h3><code>/maven:performance-review</code><p>Real numbers in, lessons out. Every skill applies them next time, so the work gets sharper the longer you use it.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="skills" class="band">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="eyebrow">The team behind the CMO</p>
+        <h2>35 skills, one memory.</h2>
+        <p class="lede">Every skill reads the same brand memory: your voice, your offer, your customers' own words, your rivals, the plan. You don't have to repeat yourself, and you don't have to pick the skill. Ask in plain words and Maven routes the request.</p>
+      </div>
+      <div class="filters" role="group" aria-label="Filter skills by stage" id="filters"></div>
+      <div class="skills" id="skill-list"></div>
+    </div>
+  </section>
+
+  <section id="agencies">
+    <div class="wrap agency">
+      <div>
+        <p class="eyebrow">For agencies</p>
+        <h2 style="margin-top:14px">Run twenty local clients like you run one.</h2>
+        <ul class="feats">
+          <li><b>A folder per client, sealed.</b><span>Say "new client acme.com" and Maven onboards them in about 3 minutes. A hook blocks any write into the wrong client's folder.</span></li>
+          <li><b>One Monday rollup.</b><span>"Brief all clients" writes every client's brief and one table naming the client most at risk.</span></li>
+          <li><b>The report owners actually read.</b><span><code>/maven:client-report</code> writes the month in plain words: the number, what we did, what it did, what we need from you. Honest credit only.</span></li>
+          <li><b>Find the next client.</b><span><code>find-local-clients</code> ranks the businesses in a trade and town that are losing the most customers. <code>pitch-the-fix</code> writes the short email about one broken thing.</span></li>
+        </ul>
+      </div>
+      <div class="sheet" style="padding-top:6px">
+        <div class="sheet-head"><div><h3>Agency status</h3><p class="sheet-meta">Monday rollup · 4 of 11 clients shown</p></div><span class="sample">Sample · illustrative</span></div>
+        <div class="table-scroll">
+          <table>
+            <thead><tr><th>Client</th><th>Booked jobs vs pace</th><th>Waiting on client</th><th>Flag</th></tr></thead>
+            <tbody>
+              <tr><td>Acme Roofing</td><td>48 / 40</td><td>none</td><td><span class="pill ok">ahead</span></td></tr>
+              <tr><td>Northside Dental</td><td>22 / 26</td><td>photos for 2 pages</td><td><span class="pill warn">behind</span></td></tr>
+              <tr><td>Cedar HVAC</td><td>37 / 35</td><td>ad budget approval</td><td><span class="pill ok">on pace</span></td></tr>
+              <tr><td>Lakeview Law</td><td>not counted</td><td>call tracking access</td><td><span class="pill warn">no count</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="callout" style="padding:0 22px 20px"><b>Most at risk: Northside Dental.</b> Reviews stalled at 3 a month while the top 3 add 12. Next: <code>/maven:reviews</code>, ~15 min.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="eyebrow">Ground rules</p>
+        <h2>Built to be trusted with a real business.</h2>
+      </div>
+      <div class="rules">
+        <div class="rule"><h3>Drafts, never actions</h3><p>Nothing is published, sent, scheduled or spent without you. Maven tells you what needs your approval.</p></div>
+        <div class="rule"><h3>No invented numbers</h3><p>Every figure is measured, sourced or marked as an estimate. Unknown baselines stay unknown until week one counts them.</p></div>
+        <div class="rule"><h3>Honest credit</h3><p>An ad platform's claims are checked against your own phone log. A pause test settles what the ads really bring in.</p></div>
+        <div class="rule"><h3>Free first</h3><p>Every skill works with your agent's own web access. API keys deepen the research. You never need one.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="install">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="eyebrow">Install</p>
+        <h2>Three minutes to your first move.</h2>
+      </div>
+      <div class="steps">
+        <div class="step"><h3>Add the plugin</h3><p>In Claude Code. You get the hooks and the QA agent too.</p><div class="cmd"><code id="cmd-1">/plugin install maven --marketplace maven-cmo/maven</code><button type="button" data-copy="cmd-1">Copy</button></div></div>
+        <div class="step"><h3>Name the business</h3><p>Add the town if it's local. Maven reads the site, the reviews and the top 3 in the map pack, then writes the brand memory.</p><div class="cmd"><code id="cmd-2">/maven:cmo Hartline Plumbing, Dallas</code><button type="button" data-copy="cmd-2">Copy</button></div></div>
+        <div class="step"><h3>Say what matters</h3><p>"More calls." Maven writes the 90-day plan around one number and starts on the first bet.</p><div class="cmd"><code id="cmd-3">/maven:marketing-plan</code><button type="button" data-copy="cmd-3">Copy</button></div></div>
+      </div>
+      <p class="alt">Using Codex, Cursor or another agent? <code>npx skills add maven-cmo/maven</code> installs the same skills.</p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Maven · MIT licensed · built on an open-source marketing skills library</span>
+    <nav aria-label="Footer">
+      <a href="https://github.com/maven-cmo/maven">GitHub</a>
+      <a href="https://github.com/maven-cmo/maven/blob/main/SYSTEM-GUIDE.md">System guide</a>
+      <a href="https://github.com/maven-cmo/maven/blob/main/CREDITS.md">Credits</a>
+    </nav>
+  </div>
+</footer>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function () {
+  var SKILLS = [
+    ["Run it", "cmo", "The front door. Reads the business, writes the brand memory, routes any request, runs agency clients."],
+    ["Run it", "marketing-plan", "The 90-day plan: one number, where it leaks, 3-5 ranked bets, budget, season, keep-or-kill rules."],
+    ["Run it", "weekly-brief", "The Monday memo: the scoreboard, three moves for the week, decisions only the owner can make."],
+    ["Run it", "performance-review", "Reads the real numbers each month and says what to keep, cut and test."],
+    ["Run it", "client-report", "The monthly report an agency sends the owner, in plain words, with honest credit."],
+    ["Know the market", "brand-voice", "Pulls the voice from the site and reviews so everything sounds like the business."],
+    ["Know the market", "positioning-angles", "Finds the angle and the offer that make them the obvious call."],
+    ["Know the market", "audience-research", "Reads reviews and forums for the words customers actually use."],
+    ["Know the market", "competitive-intel", "Sizes up the rivals that show up first, including what their customers complain about."],
+    ["Get found", "google-business-profile", "Checks the Google profile against the top 3 in the map pack and writes a month of posts."],
+    ["Get found", "local-seo-plan", "Decides which services and towns get a page, a section, or nothing."],
+    ["Get found", "service-area-pages", "Town and service pages that aren't the same page with the city swapped."],
+    ["Get found", "ai-search", "Checks whether ChatGPT, Perplexity and Google's AI name the business, and what to fix."],
+    ["Get found", "site-audit", "Crawls the site like Google and the AI crawlers do, then ranks the few fixes that matter."],
+    ["Get found", "keyword-research", "Maps what people search, from free autocomplete data, as topics."],
+    ["Get found", "seo-content", "Writes the articles and guides that answer those searches."],
+    ["Get found", "programmatic-seo", "Many pages from one template and a real data set, without thin pages."],
+    ["Get chosen", "reviews", "Finds where reviews stall, writes the owner replies, and sets up the ask after every job."],
+    ["Get chosen", "first-screen-check", "Looks at the site on a phone: is the number, the promise and the proof on the first screen?"],
+    ["Get chosen", "landing-page", "A page for one service and one offer, phone first."],
+    ["Get chosen", "direct-response-copy", "Headlines, offers and pages that get the call."],
+    ["Get chosen", "lead-magnet", "The checklist, quote calculator or guide people trade an email for."],
+    ["Get the call", "speed-to-lead", "Finds missed calls and slow replies, then sets up the text-back and follow-up."],
+    ["Get the call", "google-ads-tracking", "Makes Google Ads count calls and forms, so it bids on real leads."],
+    ["Get the call", "paid-ads", "Google and Meta ads, the structure, the budget and the test plan."],
+    ["Get the call", "meta-ads", "Sets up the Meta API, launches the campaign and proves the tracking fires."],
+    ["Get the call", "ads-incrementality-check", "A pause test against the phone log: do the ads make the phone ring, or only take credit?"],
+    ["Get the call", "creative", "Ad images and short videos from AI models, scored before you see them."],
+    ["Bring them back", "email-sequences", "The welcome, quote follow-up, review ask and seasonal emails."],
+    ["Bring them back", "newsletter", "Plans and writes a newsletter people open."],
+    ["Build authority", "social-content", "Posts built from your own best posts, not generic hooks."],
+    ["Build authority", "long-form-article", "A long guide with real numbers and named sources."],
+    ["Build authority", "content-atomizer", "Turns one piece into native posts for every platform."],
+    ["Win clients", "find-local-clients", "Ranks the businesses in a trade and town that are losing the most customers."],
+    ["Win clients", "pitch-the-fix", "Finds the owner and writes a short email about one broken thing, with a fix you can sell."]
+  ];
+  var groups = ["All"];
+  SKILLS.forEach(function (s) { if (groups.indexOf(s[0]) < 0) groups.push(s[0]); });
+  var list = document.getElementById("skill-list");
+  var filters = document.getElementById("filters");
+  var current = "All";
+
+  function render() {
+    list.innerHTML = "";
+    SKILLS.filter(function (s) { return current === "All" || s[0] === current; }).forEach(function (s) {
+      var row = document.createElement("div");
+      row.className = "skill";
+      var c = document.createElement("code"); c.textContent = "maven:" + s[1];
+      var p = document.createElement("p"); p.textContent = s[2];
+      row.appendChild(c); row.appendChild(p);
+      list.appendChild(row);
+    });
+    Array.prototype.forEach.call(filters.children, function (b) { b.setAttribute("aria-pressed", String(b.dataset.g === current)); });
+  }
+  groups.forEach(function (g) {
+    var b = document.createElement("button");
+    b.type = "button"; b.dataset.g = g; b.id = "filter-" + g.toLowerCase().replace(/\s+/g, "-");
+    var n = g === "All" ? SKILLS.length : SKILLS.filter(function (s) { return s[0] === g; }).length;
+    b.innerHTML = g + "<span>" + n + "</span>";
+    b.addEventListener("click", function () { current = g; render(); });
+    filters.appendChild(b);
+  });
+  render();
+
+  var toast = document.getElementById("toast"), t;
+  function say(msg) { toast.textContent = msg; toast.classList.add("on"); clearTimeout(t); t = setTimeout(function () { toast.classList.remove("on"); }, 1800); }
+  function selectText(el) { var r = document.createRange(); r.selectNodeContents(el); var s = window.getSelection(); s.removeAllRanges(); s.addRange(r); }
+  document.addEventListener("click", function (e) {
+    var btn = e.target.closest("[data-copy]");
+    if (!btn) return;
+    var el = document.getElementById(btn.getAttribute("data-copy"));
+    var text = el.textContent;
+    function fallback() { selectText(el); say("Selected. Press Cmd+C or Ctrl+C to copy."); }
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(function () { say("Copied"); }, fallback);
+      } else { fallback(); }
+    } catch (err) { fallback(); }
+  });
+})();
+</script>
+</body>
+</html>
